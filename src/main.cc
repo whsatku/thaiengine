@@ -1,6 +1,6 @@
 #include <iostream>
 #include <iconv.h>
-#include "loader.h"
+#include "libthaiengine/loader.h"
 
 int main(int argc, char* argv[])
 {

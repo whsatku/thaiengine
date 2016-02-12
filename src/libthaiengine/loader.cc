@@ -1,16 +1,19 @@
 #include "loader.h"
 #include <fstream>
 #include <iconv.h>
+#include <iostream>
 
 #define TIME_DETECT 0
 #define TIME_64 1
 #define TIME_32 2
+#define TEXT_SIZE 1023
 
 namespace thaiengine {
 
 Loader::Loader(char* filename)
 {
     time_size = TIME_DETECT;
+
     fp.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
     try {
@@ -51,7 +54,7 @@ DATA_RECORD Loader::read()
         record.timestamp = (int64_t) timestamp;
     }
 
-    fp.getline((char*) &record.text, sizeof(record.text), 0);
+    fp.getline(record.text, TEXT_SIZE, 0);
 
     return record;
 }
@@ -77,23 +80,29 @@ int Loader::time_detect()
     return time_size;
 }
 
-bool Loader::has_more() noexcept
+bool Loader::has_more()
 {
     return size-fp.tellg()!=0;
 }
 
-char* DATA_RECORD::utf8()
-{
-    utf8(iconv_open("UTF8", "CP874"));
+DATA_RECORD::DATA_RECORD() {
+    text = new char[TEXT_SIZE];
+}
+DATA_RECORD::~DATA_RECORD() {
+    delete[] text;
 }
 
-char* DATA_RECORD::utf8(iconv_t charset)
+char* DATA_RECORD::utf8()
 {
-    char* buffer = new char[1023];
-    size_t inLeft = sizeof(text);
-    size_t outLeft = sizeof(text);
-    char* input = &text[0];
-    char* output = &buffer[0];
+    return utf8(iconv_open("UTF8", "CP874"));
+}
+
+char* DATA_RECORD::utf8(iconv_t charset) {
+    char *buffer = new char[TEXT_SIZE];
+    size_t inLeft = TEXT_SIZE;
+    size_t outLeft = TEXT_SIZE;
+    char *input = &text[0];
+    char *output = &buffer[0];
     iconv(charset, &input, &inLeft, &output, &outLeft);
 
     return buffer;

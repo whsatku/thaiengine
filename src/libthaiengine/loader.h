@@ -1,8 +1,8 @@
-#include <fstream>
-#include <iconv.h>
-
 #ifndef THAIENGINE_READER_H_
 #define THAIENGINE_READER_H_
+
+#include <fstream>
+#include <iconv.h>
 
 namespace thaiengine {
 
@@ -24,8 +24,10 @@ public:
       uint32_t map_file_pos;
     } header;
     int64_t timestamp;
-    char text[1023];
+    char* text;
 
+    DATA_RECORD();
+    ~DATA_RECORD();
     char* utf8();
     char* utf8(iconv_t);
 };
@@ -34,7 +36,7 @@ class Loader {
 public:
     Loader(char*);
     DATA_RECORD read();
-    bool has_more() noexcept;
+    bool has_more();
 private:
     int time_size;
     std::ifstream::pos_type size;
