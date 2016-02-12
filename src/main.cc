@@ -1,6 +1,21 @@
 #include <iostream>
+#include <chrono>
 #include <iconv.h>
-#include "libthaiengine/loader.h"
+#include "libthaiengine/database.h"
+
+void query(thaiengine::Database db, char* query){
+    auto start = std::chrono::steady_clock::now();
+    thaiengine::DATA_RECORD *record = db.get(&query[0]);
+    std::chrono::duration<double> duration = std::chrono::steady_clock::now() - start;
+
+    std::cout << "Querying " << query << " takes " << duration.count() << " s" << std::endl;
+
+    if(record == nullptr){
+        std::cout << "not found" << std::endl;
+    }else {
+        std::cout << "id " << record->header.id << " pos " << record->header.map_file_pos << std::endl;
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -8,17 +23,18 @@ int main(int argc, char* argv[])
         std::cout << "usage: " << argv[0] << " filename.dat" << std::endl;
         return 0;
     }
-    thaiengine::Loader loader(argv[1]);
+//    iconv_t charset = iconv_open("UTF8", "CP874");
 
-    iconv_t charset = iconv_open("UTF8", "CP874");
+    thaiengine::Database db;
 
-    while (loader.has_more()) {
-        thaiengine::DATA_RECORD record = loader.read();
-        std::cout << "id " << record.header.id << " mapfilepos " << record.header.map_file_pos << std::endl;
-        char* text = record.utf8(charset);
-        std::cout << text << std::endl << std::endl;
-        delete[] text;
-    }
+    auto start = std::chrono::steady_clock::now();
+    db.load_from_file(argv[1]);
+    std::chrono::duration<double> duration = std::chrono::steady_clock::now() - start;
+    std::cout << "Loading takes " << duration.count() << " s" << std::endl << std::endl;
+
+    query(db, (char *) std::string("THEFRONTVILLAGE").c_str());
+    std::cout << std::endl;
+    query(db, (char *) std::string("THISVERYLONGMESSAGEWILLNOTBEFOUND").c_str());
 
     return 0;
 }
