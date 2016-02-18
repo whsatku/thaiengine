@@ -8,7 +8,7 @@ namespace counter {
 class Counter {
 public:
     Counter(thaiengine::Loader*);
-    int count();
+    unsigned int count();
 private:
     thaiengine::Loader *loader;
 };

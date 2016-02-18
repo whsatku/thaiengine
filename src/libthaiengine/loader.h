@@ -2,6 +2,7 @@
 #define THAIENGINE_READER_H_
 
 #include <fstream>
+#include <vector>
 
 namespace thaiengine {
 
@@ -31,6 +32,7 @@ public:
     Loader(char*);
     DATA_RECORD * read();
     bool has_more();
+    std::vector<DATA_RECORD*> read_all();
 private:
     int time_size;
     std::ifstream::pos_type size;

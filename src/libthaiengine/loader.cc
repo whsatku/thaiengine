@@ -59,6 +59,16 @@ DATA_RECORD* Loader::read()
     return record;
 }
 
+std::vector<DATA_RECORD*> Loader::read_all() {
+    std::vector<DATA_RECORD*> result;
+
+    while(has_more()){
+        result.push_back(read());
+    }
+
+    return result;
+}
+
 int Loader::time_detect()
 {
     fp.seekg(8, fp.cur);
@@ -84,5 +94,4 @@ bool Loader::has_more()
 {
     return size-fp.tellg()!=0;
 }
-
 } // namespace thaiengine
