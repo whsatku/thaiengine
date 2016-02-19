@@ -29,14 +29,15 @@ public:
 class Loader {
 public:
     Loader(char*);
-    DATA_RECORD * read();
+    DATA_RECORD read();
     bool has_more();
 private:
     int time_size;
     std::ifstream::pos_type size;
     std::ifstream fp;
 
-    void skip_header();
+    inline void skip_header();
+    inline std::ifstream::pos_type get_file_size();
     int time_detect();
 };
 

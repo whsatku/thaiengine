@@ -11,12 +11,12 @@ struct Hasher {
 };
 
 class Database {
-    std::unordered_map<std::string, DATA_RECORD*, Hasher> database;
+    std::unordered_map<std::string, DATA_RECORD, Hasher> database;
 
 public:
     void load_from_file(char* filename);
-    void add(DATA_RECORD*);
-    DATA_RECORD* get(char*);
+    void add(DATA_RECORD);
+    const DATA_RECORD* get(char*);
 };
 
 }

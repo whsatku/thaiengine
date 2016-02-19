@@ -3,9 +3,9 @@
 #include <iconv.h>
 #include "libthaiengine/database.h"
 
-void query(thaiengine::Database db, char* query){
+void query(thaiengine::Database *db, char* query){
     auto start = std::chrono::steady_clock::now();
-    thaiengine::DATA_RECORD *record = db.get(&query[0]);
+    const thaiengine::DATA_RECORD *record = db->get(&query[0]);
     std::chrono::duration<double> duration = std::chrono::steady_clock::now() - start;
 
     std::cout << "Querying " << query << " takes " << duration.count() << " s" << std::endl;
@@ -32,9 +32,9 @@ int main(int argc, char* argv[])
     std::chrono::duration<double> duration = std::chrono::steady_clock::now() - start;
     std::cout << "Loading takes " << duration.count() << " s" << std::endl << std::endl;
 
-    query(db, (char *) std::string("THEFRONTVILLAGE").c_str());
+    query(&db, (char *) std::string("THEFRONTVILLAGE").c_str());
     std::cout << std::endl;
-    query(db, (char *) std::string("THISVERYLONGMESSAGEWILLNOTBEFOUND").c_str());
+    query(&db, (char *) std::string("THISVERYLONGMESSAGEWILLNOTBEFOUND").c_str());
 
     return 0;
 }

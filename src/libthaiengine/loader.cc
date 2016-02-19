@@ -19,49 +19,57 @@ Loader::Loader(char* filename)
         throw std::invalid_argument("cannot open file");
     }
 
-    fp.seekg(0, fp.end);
-    size = fp.tellg();
+    size = get_file_size();
 
     skip_header();
 }
 
-void Loader::skip_header()
+inline void Loader::skip_header()
 {
     fp.seekg(256, fp.beg);
 }
 
-DATA_RECORD* Loader::read()
+inline std::ifstream::pos_type Loader::get_file_size()
 {
-    DATA_RECORD *record = new DATA_RECORD;
-    fp.read((char*) &record->header, sizeof(record->header));
+    fp.seekg(0, fp.end);
+    return fp.tellg();
+}
+
+DATA_RECORD Loader::read()
+{
+    DATA_RECORD record;
+    fp.read((char*) &record.header, sizeof(record.header));
 
     // detect
     if (time_size==TIME_DETECT) {
-        time_detect();
+        time_size = time_detect();
     }
 
     switch (time_size) {
     case TIME_64:
-        fp.read((char*) &record->timestamp, sizeof(int64_t));
+        fp.read((char*) &record.timestamp, sizeof(int64_t));
         fp.seekg(4, fp.cur);
         break;
     case TIME_32:
         int32_t timestamp;
         fp.read((char*) &timestamp, sizeof(timestamp));
-        record->timestamp = (int64_t) timestamp;
+        record.timestamp = (int64_t) timestamp;
     }
 
     char buffer[TEXT_SIZE];
     fp.getline(&buffer[0], TEXT_SIZE, 0);
 
-    record->text = std::string(buffer);
+    record.text = std::string(buffer);
 
     return record;
 }
 
 int Loader::time_detect()
 {
+    // seek past 64 bit timestamp
     fp.seekg(8, fp.cur);
+
+    // check for 0000 after timestamp
     int success = 1;
     for (int i = 0; i<4; i++) {
         if (fp.get()!=0) {
@@ -70,19 +78,18 @@ int Loader::time_detect()
             break;
         }
     }
-    if (success==1) {
-        time_size = TIME_64;
-    } else {
-        time_size = TIME_32;
-    }
+
     fp.seekg(-8-4, fp.cur);
 
-    return time_size;
+    if (success==1) {
+        return TIME_64;
+    } else {
+        return TIME_32;
+    }
 }
 
 bool Loader::has_more()
 {
     return size-fp.tellg()!=0;
 }
-
 } // namespace thaiengine
