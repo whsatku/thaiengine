@@ -28,7 +28,7 @@ public:
 
 class Loader {
 public:
-    Loader(char*);
+    Loader(const char*);
     DATA_RECORD read();
     bool has_more();
 private:
