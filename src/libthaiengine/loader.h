@@ -37,7 +37,6 @@ private:
     std::ifstream fp;
 
     inline void skip_header();
-    inline std::ifstream::pos_type get_file_size();
     int time_detect();
 };
 

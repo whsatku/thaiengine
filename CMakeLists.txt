@@ -10,7 +10,7 @@ add_subdirectory(src/libthaiengine)
 
 find_package(Iconv REQUIRED)
 
-set(SOURCE_FILES src/main.cc)
+set(SOURCE_FILES src/rss.c src/main.cc)
 add_executable(ThaiEngine ${SOURCE_FILES})
 set_property(TARGET ThaiEngine PROPERTY CXX_STANDARD 11)
 set_property(TARGET ThaiEngine PROPERTY CXX_STANDARD_REQUIRED ON)

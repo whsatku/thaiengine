@@ -2,6 +2,9 @@
 #include <chrono>
 #include <iconv.h>
 #include "libthaiengine/database.h"
+extern "C" {
+#include "rss.h"
+}
 
 void query(thaiengine::Database *db, char* query){
     auto start = std::chrono::steady_clock::now();
@@ -9,6 +12,7 @@ void query(thaiengine::Database *db, char* query){
     std::chrono::duration<double> duration = std::chrono::steady_clock::now() - start;
 
     std::cout << "Querying " << query << " takes " << duration.count() << " s" << std::endl;
+    std::cout << "Peak query RSS: " << ::getPeakRSS() << " bytes" << std::endl;
 
     if(record == nullptr){
         std::cout << "not found" << std::endl;
@@ -27,10 +31,18 @@ int main(int argc, char* argv[])
 
     thaiengine::Database db;
 
+    std::cout << "Starting RSS: " << ::getCurrentRSS() << " bytes" << std::endl;
+
     auto start = std::chrono::steady_clock::now();
-    db.load_from_file(argv[1]);
+    try {
+        db.load_from_file(argv[1]);
+    }catch(std::exception &e){
+        std::cout << "An error occured while loading input file: " << e.what() << std::endl;
+        return 1;
+    }
     std::chrono::duration<double> duration = std::chrono::steady_clock::now() - start;
     std::cout << "Loading takes " << duration.count() << " s" << std::endl << std::endl;
+    std::cout << "Peak loading RSS: " << getPeakRSS() << " bytes" << std::endl;
 
     query(&db, (char *) std::string("THEFRONTVILLAGE").c_str());
     std::cout << std::endl;

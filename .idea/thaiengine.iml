@@ -10,6 +10,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/libthaiengine/loader.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/libthaiengine/database.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/rss.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/rss.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/FindIconv.cmake" isTestSource="false" />
     </content>

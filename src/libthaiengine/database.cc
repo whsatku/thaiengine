@@ -22,9 +22,13 @@ namespace thaiengine {
     void Database::load_from_file(char *filename) {
         Loader loader(filename);
 
-        while(loader.has_more()){
-            DATA_RECORD record = loader.read();
-            add(record);
+        while(true){
+            try {
+                DATA_RECORD record = loader.read();
+                add(record);
+            }catch(std::exception e){ // for some reason catching std::ios_base::failure doesn't seems to be enough
+                break;
+            }
         }
 #ifndef NDEBUG
         std::cout << "used " << database.bucket_count() << " buckets" << std::endl;
