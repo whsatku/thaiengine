@@ -7,7 +7,7 @@
 
 namespace thaiengine {
 
-Loader::Loader(char* filename)
+Loader::Loader(const char* filename)
 {
     time_size = TIME_DETECT;
 

@@ -19,7 +19,7 @@ namespace thaiengine {
         return &record->second;
     }
 
-    void Database::load_from_file(char *filename) {
+    void Database::load_from_file(const char *filename) {
         Loader loader(filename);
 
         while(true){
