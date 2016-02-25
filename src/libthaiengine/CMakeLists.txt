@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.3)
 project(libthaiengine)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3 -funroll-loops")
+add_library(thaiengine SHARED loader.cc database.cc farmhash.cc)
+target_compile_features(thaiengine PRIVATE cxx_auto_type)
+target_compile_features(thaiengine PUBLIC cxx_nullptr)
 
-set(SOURCE_FILES loader.cc database.cc farmhash.cc)
-add_library(thaiengine SHARED ${SOURCE_FILES})
-set_property(TARGET thaiengine PROPERTY CXX_STANDARD 11)
-set_property(TARGET thaiengine PROPERTY CXX_STANDARD_REQUIRED ON)
+include(CompileOption)
+if(NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
+    COMPILE_OPTION(thaiengine -march=native)
+endif(NOT CMAKE_BUILD_TYPE MATCHES DEBUG)

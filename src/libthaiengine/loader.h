@@ -1,6 +1,7 @@
 #ifndef THAIENGINE_READER_H_
 #define THAIENGINE_READER_H_
 
+#include <cstdint>
 #include <fstream>
 
 namespace thaiengine {

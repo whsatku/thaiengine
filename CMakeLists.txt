@@ -2,23 +2,34 @@ cmake_minimum_required(VERSION 3.3)
 project(ThaiEngine)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=native -O3")
-
 add_subdirectory(src/libthaiengine)
-add_subdirectory(lib/benchmark)
 
 find_package(Iconv REQUIRED)
 include_directories(${ICONV_INCLUDE_DIR})
 
 add_executable(ThaiEngine src/rss.c src/main.cc)
-set_property(TARGET ThaiEngine PROPERTY CXX_STANDARD 11)
-set_property(TARGET ThaiEngine PROPERTY CXX_STANDARD_REQUIRED ON)
+target_compile_features(ThaiEngine PRIVATE cxx_auto_type)
+target_compile_features(ThaiEngine PRIVATE cxx_nullptr)
 target_link_libraries(ThaiEngine ${ICONV_LIBRARIES} thaiengine)
 
-add_executable(bench src/bench.cc)
-set_property(TARGET bench PROPERTY CXX_STANDARD 11)
-set_property(TARGET bench PROPERTY CXX_STANDARD_REQUIRED ON)
-target_link_libraries(bench thaiengine benchmark)
+include(CompileOption)
+if(NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
+    COMPILE_OPTION(ThaiEngine -march=native)
+endif(NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
 
+option(BUILD_BENCH "Build benchmark utilities" OFF)
+
+if(BUILD_BENCH)
+    set(BENCHMARK_ENABLE_LTO ON)
+    add_subdirectory(lib/benchmark)
+
+    add_executable(bench src/bench.cc)
+    target_link_libraries(bench thaiengine benchmark)
+
+    if(HAS_O3 AND NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
+        target_compile_options(bench PRIVATE -O3)
+    endif(HAS_O3 AND NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
+    if(HAS_NATIVE_ARCH AND NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
+        target_compile_options(bench PRIVATE -march=native)
+    endif(HAS_NATIVE_ARCH AND NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
+endif(BUILD_BENCH)
