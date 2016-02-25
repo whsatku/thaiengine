@@ -1,4 +1,5 @@
 #include <benchmark/benchmark.h>
+#include <iostream>
 #include <sstream>
 #include "libthaiengine/database.h"
 
@@ -29,7 +30,10 @@ BENCHMARK(BM_SearchNotFound);
 static void BM_FileLoad(benchmark::State& state) {
     std::ostringstream filename;
     filename << "SyllableDB-V" << state.range_x() << ".dat";
-    const char* name = filename.str().c_str();
+    std::string name_str = filename.str();
+    // inlining filename.str().c_str() works on clang
+    // but gcc will aggressively remove std::string and the pointer will be null
+    const char* name = name_str.c_str();
 
     while (state.KeepRunning()){
         thaiengine::Database database;

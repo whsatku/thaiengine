@@ -32,7 +32,6 @@ DATA_RECORD Loader::read()
     DATA_RECORD record;
     fp.read((char*) &record.header, sizeof(record.header));
 
-    // detect
     if (time_size==TIME_DETECT) {
         time_size = time_detect();
     }
