@@ -29,7 +29,8 @@ BENCHMARK(BM_SearchNotFound);
 static void BM_FileLoad(benchmark::State& state) {
     std::ostringstream filename;
     filename << "SyllableDB-V" << state.range_x() << ".dat";
-    const char* name = filename.str().c_str();
+    std::string file_str = filename.str();
+    const char* name = file_str.c_str();
 
     while (state.KeepRunning()){
         thaiengine::Database database;
