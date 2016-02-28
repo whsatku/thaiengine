@@ -7,10 +7,14 @@ add_subdirectory(src/libthaiengine)
 find_package(Iconv REQUIRED)
 include_directories(${ICONV_INCLUDE_DIR})
 
+if(WIN32)
+	find_library(PSAPI Psapi)
+endif(WIN32)
+
 add_executable(ThaiEngine src/rss.c src/main.cc)
 target_compile_features(ThaiEngine PRIVATE cxx_auto_type)
 target_compile_features(ThaiEngine PRIVATE cxx_nullptr)
-target_link_libraries(ThaiEngine ${ICONV_LIBRARIES} thaiengine)
+target_link_libraries(ThaiEngine ${ICONV_LIBRARIES} thaiengine PSAPI)
 
 include(CompileOption)
 if(NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
