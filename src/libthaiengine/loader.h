@@ -31,14 +31,9 @@ class Loader {
 public:
     Loader(const char*);
     DATA_RECORD read();
-    bool has_more();
 private:
-    int time_size;
-    std::ifstream::pos_type size;
+    void* size_algo;
     std::ifstream fp;
-
-    inline void skip_header();
-    int time_detect();
 };
 
 } // namespace thaiengine
