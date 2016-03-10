@@ -11,12 +11,16 @@ namespace thaiengine {
         database.insert({record.text, record});
     }
 
-    const DATA_RECORD* Database::get(char* key) {
-        auto record = database.find(std::string(key));
+    const DATA_RECORD* Database::get(std::string key) {
+        auto record = database.find(key);
         if(record == database.end()){
             return nullptr;
         }
         return &record->second;
+    }
+
+    const DATA_RECORD* Database::get(char* key) {
+        return get(std::string(key));
     }
 
     void Database::load_from_file(const char *filename) {

@@ -16,6 +16,7 @@ class Database {
 public:
     void load_from_file(const char* filename);
     void add(DATA_RECORD);
+    const DATA_RECORD* get(std::string);
     const DATA_RECORD* get(char*);
 };
 
