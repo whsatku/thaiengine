@@ -106,5 +106,5 @@ int main(const int argc, const char* argv[])
         i++;
     }
 
-    std::cout << "Search done in " << DIFF(timer) << "us. ";
+    std::cout << "Search done in " << DIFF(timer) << "us. \n";
 }
